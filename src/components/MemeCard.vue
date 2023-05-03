@@ -1,0 +1,97 @@
+<script setup lang="ts">
+import {Meme} from 'src/utils/interfaces';
+import type { PropType } from 'vue'
+
+// props declaration
+const props = defineProps({
+  data:{
+    type: Object as PropType<Meme>
+  }
+})
+
+// delete meme method
+
+function deleteMeme(id:string){
+  console.log(id)
+}
+
+</script>
+
+<template>
+<div class="card">
+  <q-card class="my_card" flat bordered>
+
+    <div class="meme-image">
+      <img :src="props?.data.imageUrl">
+      <div class="text_content">
+          <p class="header">{{ props?.data.topText }}</p>
+          <p class="footer">{{ props?.data.bottomText }}</p>
+      </div>
+    </div>
+
+    <q-btn
+        class="btn-del"
+        size="10px"
+        round
+        text-color="white"
+        icon="close"
+        @click="deleteMeme(props?.data.id)"
+    >
+
+    </q-btn>
+  </q-card>
+</div>
+</template>
+
+<style scoped lang="scss">
+.card{
+  margin: 20px 0;
+  .my_card{
+    overflow: hidden;
+    max-width: 300px;
+    width: 100%;
+    max-height: 200px;
+    position: relative;
+    .btn-del{
+      background: rgba(0,0,0,.6);
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .text_content{
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      p{
+        text-align: center;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        width: 100%;
+        min-height: 30px;
+        white-space: normal;
+        background: rgba(0,0,0,.4);
+        color: white;
+      }
+    }
+    .meme-image{
+      width: 100%;
+      max-height: 300px;
+      img{
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+</style>
