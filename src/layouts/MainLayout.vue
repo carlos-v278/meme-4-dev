@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+  <q-layout view="lHh Lpr lFf" >
+    <q-header class="bg-green" >
+      <q-toolbar class="row items-center" >
         <q-btn
           flat
           dense
@@ -11,12 +11,26 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
+        <q-toolbar-title class="row items-center">
          <div class="logo">
-           <img :src="require('')" alt="">
+           <img src="public/img/logo.png" alt="logo">
          </div>
-        </q-toolbar-title>
 
+        </q-toolbar-title>
+        <ul class="nav_links">
+          <li
+            v-for="(link,index) in appLinks"
+            :key="index"
+            class="nav_link"
+          >
+            <router-link
+              class="link"
+              :to="{name:link?.pathName, to:link?.to}"
+            >
+              {{ link.name }}
+            </router-link>
+          </li>
+        </ul>
       </q-toolbar>
     </q-header>
 
@@ -86,8 +100,28 @@ function toggleLeftDrawer() {
   width: 100%;
   margin: 0 auto;
 }
+.logo{
+  margin: 5px 10px;
+  max-width: 60px;
+  max-height: 50px;
+  img{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+}
 .link{
   color: black;
   text-decoration: none;
+}
+.nav_links{
+  display: flex;
+  gap: 20px;
+  li{
+    list-style: none;
+    a{
+      color: white;
+    }
+  }
 }
 </style>

@@ -39,6 +39,7 @@ function deleteMeme(id:string){
     >
 
     </q-btn>
+
   </q-card>
 </div>
 </template>
