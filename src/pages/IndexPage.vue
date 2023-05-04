@@ -41,7 +41,7 @@ const allMemes =ref<Meme[]>([])
 
 function getAllMemes():void{
     api
-      .get('/')
+      .get('memes/')
       .catch((error) => {
         console.log('error', error);
       })

@@ -47,7 +47,7 @@ function postMeme():void{
   formData.append("bottomText",textBottom.value)
   formData.append("image",uploadFile.value)
   api
-    .post('/create', formData)
+    .post('memes/create', formData)
     .catch((error) => {
       console.log('error', error);
     })

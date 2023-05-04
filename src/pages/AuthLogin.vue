@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import {api} from 'src/utils/fetch';
+import { useUserAuth } from 'src/stores/userAuth';
+import { useRouter } from 'vue-router'
+// import { storeToRefs } from 'pinia';
 
-const authId = ref<string | null>(null)
+
+const router = useRouter()
+const auth = useUserAuth();
 const authPassword = ref<string | null>(null)
 
 function onSubmit():boolean {
-  if (authId.value != '' &&  authPassword.value != '') {
+  if ( authPassword.value != '') {
+    connectUser()
     console.log('accept to send')
     return true
 
@@ -17,11 +24,27 @@ function onSubmit():boolean {
 }
 
 function onReset ():boolean {
-  authId.value = null
   authPassword.value = null
   return true
 }
+function connectUser():void{
+  api
+    .post('authenticate',{password:authPassword.value})
+    .catch((error) => {
+      console.log('error', error);
+    })
+    .then((response) => {
+      if(response?.data.connect){
+        auth.connectUser()
+        window.localStorage.setItem(
+          'userConnected',
+          JSON.stringify({connect:true})
+        )
+        router.push({ name: 'home' })
 
+      }
+    });
+}
 
 </script>
 
@@ -34,16 +57,6 @@ function onReset ():boolean {
       @reset="onReset"
       class="q-gutter-md"
     >
-      <q-input
-        filled
-        v-model="authId"
-        type="mail"
-        label="Identifiant"
-        hint="Votre identifiant de connexion"
-        lazy-rules
-        :rules="[ val => val && val.length > 0 || 'Champs vide']"
-      />
-
       <q-input
         filled
         type="password"

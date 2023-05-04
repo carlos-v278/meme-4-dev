@@ -14,7 +14,7 @@ const props = defineProps({
 
 function deleteMeme(id:string){
   api
-    .delete(`/delete/${id}`)
+    .delete(`memes/delete/${id}`)
     .catch((error) => {
       console.log('error', error);
     })
