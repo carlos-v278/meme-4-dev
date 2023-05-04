@@ -3,7 +3,7 @@ import qs from 'qs';
 
 
 export const api = axios.create({
-  baseURL: 'https://baconipsum.com/api/',
+  baseURL: 'http://localhost:3000/memes',
   paramsSerializer: {
     serialize: (params) => {
       return qs.stringify(params, { arrayFormat: 'repeat' });

@@ -1,13 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onBeforeMount, ref} from 'vue'
 import {api} from'src/utils/fetch'
+import { useRouter } from 'vue-router'
+import { useUserAuth } from 'src/stores/userAuth';
+import { storeToRefs } from 'pinia';
 
+
+const auth = useUserAuth();
+const { getUserConnected } = storeToRefs(auth)
+
+const router = useRouter()
 const textTop = ref<string | null>(null)
 const textBottom = ref<string| null>(null)
 const uploadFile = ref<T>(null)
+
+onBeforeMount(() => {
+  if(!getUserConnected.value){
+    router.push({ name: 'login' })
+  }
+
+});
 function onSubmit():boolean  {
-  if (authId.value != '' &&  authPassword.value != '') {
+  if (textTop.value != '' &&  textBottom.value != '') {
     console.log('accept to send')
+    postMeme()
     return true
   }
   else {
@@ -21,18 +37,23 @@ function onReset ():boolean {
   textTop.value = null
   textBottom.value = null
   uploadFile.value = null
-  fetchdata()
+
   return true
 }
 
-function fetchdata(){
+function postMeme():void{
+  let formData = new FormData()
+  formData.append("topText",textTop.value)
+  formData.append("bottomText",textBottom.value)
+  formData.append("image",uploadFile.value)
   api
-    .get('?type=meat-and-filler')
+    .post('/create', formData)
     .catch((error) => {
       console.log('error', error);
     })
     .then((response) => {
      console.log(response)
+      router.push({ name: 'home' })
     });
 }
 

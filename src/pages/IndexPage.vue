@@ -3,7 +3,7 @@
     <div class="cards row  justify-start wrap">
       <MemeCard
         v-for="meme in  allMemes"
-        :key="meme.id"
+        :key="meme._id"
         :data="meme"
       >
       </MemeCard>
@@ -12,37 +12,43 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref,onBeforeMount } from 'vue';
 import {Meme} from 'src/utils/interfaces'
 import MemeCard from 'components/MemeCard.vue';
+import {api} from 'src/utils/fetch';
+import { useUserAuth } from 'src/stores/userAuth';
+import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router'
 
-const allMemes =ref<Meme[]>([
-  {
-    id:'133T3TB-GE53T',
-    topText:'Meilleir ezfezfezfzefzfzf',
-    bottomText:'Bottom Meme',
-    imageUrl:'https://picsum.photos/300/300',
-  },
-  {
-    id:'133T5TB-FE53T',
-    topText:'ezfezfz meme',
-    bottomText:'ezfezfezfez Meme',
-    imageUrl:'https://picsum.photos/300/300',
-  },
-  {
-    id:'133T5TB-FE57T',
-    topText:'ezfezfzfezfzefez meme',
-    bottomText:'fezfezfezfez Meme',
-    imageUrl:'https://picsum.photos/300/300',
-  },
-  {
-    id:'133T5TB-FE57T',
-    topText:'ezfezfzfezfzefez meme',
-    bottomText:'fezfezfezfez Meme',
-    imageUrl:'https://picsum.photos/300/300',
-  },
-])
 
+const router = useRouter()
+const auth = useUserAuth();
+const { getUserConnected } = storeToRefs(auth)
+
+//lifes cycles
+onBeforeMount(() => {
+  if(getUserConnected.value){
+    getAllMemes()
+    console.log(allMemes.value)
+  } else{
+    router.push({ name: 'login' })
+  }
+
+});
+
+
+const allMemes =ref<Meme[]>([])
+
+function getAllMemes():void{
+    api
+      .get('/')
+      .catch((error) => {
+        console.log('error', error);
+      })
+      .then((response) => {
+         allMemes.value= response?.data
+      });
+}
 </script>
 
 <style lang="scss">

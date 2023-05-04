@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Meme} from 'src/utils/interfaces';
 import type { PropType } from 'vue'
+import {api} from 'src/utils/fetch';
 
 // props declaration
 const props = defineProps({
@@ -12,8 +13,17 @@ const props = defineProps({
 // delete meme method
 
 function deleteMeme(id:string){
-  console.log(id)
+  api
+    .delete(`/delete/${id}`)
+    .catch((error) => {
+      console.log('error', error);
+    })
+    .then((response) => {
+      console.log(response)
+      window.location.reload()
+    });
 }
+
 
 </script>
 
@@ -35,7 +45,7 @@ function deleteMeme(id:string){
         round
         text-color="white"
         icon="close"
-        @click="deleteMeme(props?.data.id)"
+        @click="deleteMeme(props?.data._id)"
     >
 
     </q-btn>

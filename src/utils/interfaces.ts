@@ -1,5 +1,5 @@
  export interface Meme {
-  id:string,
+  _id:string,
   topText:string,
   bottomText:string,
   imageUrl:string,
