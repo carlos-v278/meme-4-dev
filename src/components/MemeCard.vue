@@ -7,6 +7,10 @@ import {api} from 'src/utils/fetch';
 const props = defineProps({
   data:{
     type: Object as PropType<Meme>
+  },
+  text:{
+    type:Boolean,
+    default:false
   }
 })
 
@@ -33,13 +37,14 @@ function deleteMeme(id:string){
 
     <div class="meme-image">
       <img :src="props?.data.imageUrl">
-      <div class="text_content">
+      <div v-if="props.text" class="text_content">
           <p class="header">{{ props?.data.topText }}</p>
           <p class="footer">{{ props?.data.bottomText }}</p>
       </div>
     </div>
 
     <q-btn
+        v-if=" !props.text"
         class="btn-del"
         size="10px"
         round
@@ -61,8 +66,9 @@ function deleteMeme(id:string){
     overflow: hidden;
     max-width: 300px;
     width: 100%;
-    max-height: 200px;
+    height: 220px;
     position: relative;
+    margin: 0 auto;
     .btn-del{
       background: rgba(0,0,0,.6);
       position: absolute;
@@ -89,13 +95,13 @@ function deleteMeme(id:string){
         width: 100%;
         min-height: 30px;
         white-space: normal;
-        background: rgba(0,0,0,.4);
+        background: rgba(0,0,0,1);
         color: white;
       }
     }
     .meme-image{
       width: 100%;
-      max-height: 300px;
+      height: 100%;
       img{
         object-fit: cover;
         width: 100%;

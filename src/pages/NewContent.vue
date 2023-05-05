@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {onBeforeMount, ref} from 'vue'
+import {onBeforeMount, reactive, ref, watch} from 'vue'
+import MemeCard from 'components/MemeCard.vue';
 import {api} from'src/utils/fetch'
 import { useRouter } from 'vue-router'
 import { useUserAuth } from 'src/stores/userAuth';
 import { storeToRefs } from 'pinia';
-
+import {Meme} from 'src/utils/interfaces'
 
 const auth = useUserAuth();
 const { getUserConnected } = storeToRefs(auth)
@@ -12,7 +13,11 @@ const { getUserConnected } = storeToRefs(auth)
 const router = useRouter()
 const textTop = ref<string | null>(null)
 const textBottom = ref<string| null>(null)
+
 const uploadFile = ref<T>(null)
+const imagePrev = ref<T>(null)
+
+let meme = ref< undefined | Meme>(undefined)
 
 onBeforeMount(() => {
   if(!getUserConnected.value){
@@ -36,7 +41,7 @@ function onSubmit():boolean  {
 function onReset ():boolean {
   textTop.value = null
   textBottom.value = null
-  uploadFile.value = null
+  // uploadFile.value = null
 
   return true
 }
@@ -56,6 +61,18 @@ function postMeme():void{
       router.push({ name: 'home' })
     });
 }
+
+watch(uploadFile,  () => {
+  imagePrev.value = URL.createObjectURL(uploadFile.value)
+
+  meme.value = {
+    _id:1,
+    topText:textTop.value,
+    bottomText:textBottom.value,
+    imageUrl:imagePrev.value,
+  }
+  console.log(meme.value)
+})
 
 
 </script>
@@ -86,17 +103,20 @@ function postMeme():void{
           lazy-rules
           :rules="[ val => val && val.length > 0 || 'Champs vide']"
         />
-        <q-file color="white" bg-color="green"  filled v-model="uploadFile" label="Fichier">
+        <q-file color="white"  filled v-model="uploadFile" label="Fichier">
           <template v-slot:prepend>
             <q-icon name="attachment" />
           </template>
         </q-file>
 
         <div>
-          <q-btn label="Uploader" type="submit" color="green"/>
-          <q-btn label="Reset" type="reset" color="green" flat class="q-ml-sm" />
+          <q-btn label="Uploader" type="submit" color="dark"/>
+          <q-btn label="Reset" type="reset" color="dark" flat class="q-ml-sm" />
         </div>
       </q-form>
+    </div>
+    <div class="pre-view">
+      <MemeCard v-if="meme != undefined" :data="meme" :text="true" ></MemeCard>
     </div>
   </div>
 </template>

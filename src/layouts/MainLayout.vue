@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf" >
-    <q-header class="bg-green" >
+    <q-header class="bg-dark" >
       <q-toolbar class="row items-center" >
         <q-btn
           flat
@@ -29,6 +29,17 @@
             >
               {{ link.name }}
             </router-link>
+
+          </li>
+          <li class="nav_link">
+            <q-btn
+              flat
+              dense
+              icon="logout"
+              size="sm"
+              aria-label="Menu"
+              @click="deconnect()"
+            />
           </li>
         </ul>
       </q-toolbar>
@@ -59,7 +70,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="padding_0">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -68,6 +79,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import {Links } from  'src/utils/interfaces'
+import {useUserAuth} from 'stores/userAuth';
+import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const $q = useQuasar()
+const auth = useUserAuth();
 const appLinks = ref<Links[]>([
   {
     name:'Accueil',
@@ -92,6 +110,22 @@ const leftDrawerOpen = ref(false)
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+function deconnect():void{
+  auth.disconnectUser()
+  window.localStorage.setItem(
+    'userConnected',
+    JSON.stringify({connect:false})
+  )
+  triggerPositive()
+  router.push({ name: 'login' })
+}
+function triggerPositive (){
+  $q.notify({
+    type: 'positive',
+    message: 'Vous êtes bien déconnecté '
+  })
+}
 </script>
 
 <style lang="scss">
@@ -99,6 +133,9 @@ function toggleLeftDrawer() {
   max-width: 1080px;
   width: 100%;
   margin: 0 auto;
+}
+.padding_0{
+  padding: 0 !important;
 }
 .logo{
   margin: 5px 10px;

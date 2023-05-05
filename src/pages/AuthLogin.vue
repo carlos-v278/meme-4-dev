@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onBeforeMount, ref} from 'vue'
 import {api} from 'src/utils/fetch';
 import { useUserAuth } from 'src/stores/userAuth';
 import { useRouter } from 'vue-router'
+import {storeToRefs} from 'pinia';
 // import { storeToRefs } from 'pinia';
 
 
 const router = useRouter()
 const auth = useUserAuth();
+const { getUserConnected } = storeToRefs(auth)
 const authPassword = ref<string | null>(null)
+onBeforeMount(() => {
+  if(getUserConnected.value){
+    router.push({ name: 'home' })
+  }
 
+});
 function onSubmit():boolean {
   if ( authPassword.value != '') {
     connectUser()
@@ -70,8 +77,8 @@ function connectUser():void{
 
 
       <div>
-        <q-btn label="Connexion" type="submit" color="green"/>
-        <q-btn label="Reset" type="reset" color="green" flat class="q-ml-sm" />
+        <q-btn label="Connexion" type="submit" color="dark"/>
+        <q-btn label="Reset" type="reset" color="dark" flat class="q-ml-sm" />
       </div>
     </q-form>
   </div>
